@@ -26,10 +26,10 @@ libconfig is required during the build of sspender, as well as during execution 
 $ apt install libconfig++-dev
 ```
 
-### rtcwake
-rtcwake is required to suspend the machine, this is the default way.
+### sdbus-cpp
+sdbus-cpp is required to talk to the dbus with systemd to suspend the machine
 ``` bash
-$ apt install rtcwake
+$ apt install sdbus-cpp
 ```
 
 ### hdparm

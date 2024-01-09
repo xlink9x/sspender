@@ -1,0 +1,10 @@
+[Unit]
+Description=sspender to suspend the system if its idle
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/sspender /opt/sspender/sspender.cfg
+
+[Install]
+WantedBy=suspend.target
+

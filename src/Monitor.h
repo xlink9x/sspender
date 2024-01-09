@@ -19,13 +19,11 @@
 #ifndef MONITOR_H_
 #define MONITOR_H_
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-#include "constants.h"
-#include "Device.h"
-#include "Disk.h"
 #include "Cpu.h"
+#include "Disk.h"
 #include "utils.h"
 
 using namespace std;
@@ -35,37 +33,35 @@ using namespace std;
  * need to be monitored, this can also be called to check if
  * the system is idle, cpu load, storage load...
  */
-class Monitor
-{
+class Monitor {
 private:
-	vector<Disk*> m_disksToMonitor;  //all disks that need to be monitored
-	vector<Cpu*> m_cpusToMonitor;    //all the cpus that need to be monitored
+  vector<Disk *> m_disksToMonitor; // all disks that need to be monitored
+  vector<Cpu *> m_cpusToMonitor;   // all the cpus that need to be monitored
 
 public:
-	Monitor();
-	~Monitor();
+  Monitor();
+  ~Monitor();
 
-	//get the current cpu load
-	void getCpuLoad(double *cpuUsage);
+  // get the current cpu load
+  void getCpuLoad(double *cpuUsage);
 
-	//get the storage load
-	void getStorageLoad(double *storageLoad, double *storageRead, double *storageWritten);
+  // get the storage load
+  void getStorageLoad(double *storageLoad, double *storageRead, double *storageWritten);
 
-	//check if any of the clients is online
-	bool areClientsConnected(const vector<string> &clients);
+  // check if any of the clients is online
+  bool areClientsConnected(const vector<string> &clients);
 
-	//ping and check if this ip is online
-	bool isIpAddressOnline(const string &ipAddress);
+  // ping and check if this ip is online
+  bool isIpAddressOnline(const string &ipAddress);
 
-	//start monitoring all the following devices
-	void monitorSystemUsage(const vector<DiskCfg> &disks,
-                               const vector<CpuCfg> &cpus);
+  // start monitoring all the following devices
+  void monitorSystemUsage(const vector<DiskCfg> &disks, const vector<CpuCfg> &cpus);
 
-	void printTheMachineUsage();
+  void printTheMachineUsage();
 
-	bool isTheMachineIdle();
+  bool isTheMachineIdle();
 
-	bool canBeSuspended();
+  bool canBeSuspended();
 };
 
 #endif

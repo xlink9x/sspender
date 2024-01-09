@@ -4,10 +4,11 @@ CMAKE_POLICY ( VERSION 3.0 )
 
 PROJECT ( sspender )
 
-SET (CMAKE_CXX_STANDARD 11)
+SET (CMAKE_CXX_STANDARD 20)
 
 find_library(LIBCONFIG_PATH config++)
 find_package (Threads)
+find_package(sdbus-c++ REQUIRED)
 
 ADD_EXECUTABLE ( sspender
   src/sspender.cpp
@@ -22,6 +23,7 @@ ADD_EXECUTABLE ( sspender
   src/utils.cpp
   )
 
-target_link_libraries(sspender "${LIBCONFIG_PATH}" ${CMAKE_THREAD_LIBS_INIT})
+
+target_link_libraries(sspender PUBLIC "${LIBCONFIG_PATH}" ${CMAKE_THREAD_LIBS_INIT} PRIVATE SDBusCpp::sdbus-c++)
 
 INSTALL (TARGETS sspender DESTINATION /usr/local/bin)

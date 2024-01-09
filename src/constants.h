@@ -19,31 +19,31 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-using namespace std;
+#include <string>
 
-enum SLEEP_MODE {STAND_BY, MEM, DISK};
-
-const int STORAGE_READ_WRITE_LIMIT    = 400;    //#KB/s across all drives
-const int MONITORING_THREAD_FREQUENCY = 1000; //The frequency at which the threads will monitor usage (ms)
-const int SUSPEND_OFFSET      = 5;      //set the wake up time # minutes before to allow enough warm up time
-const int SECONDS_IN_MINUTE   = 60;
+const int STORAGE_READ_WRITE_LIMIT = 400; // #KB/s across all drives
+const int MONITORING_THREAD_FREQUENCY =
+    1000;                     // The frequency at which the threads will monitor usage (ms)
+const int SUSPEND_OFFSET = 5; // set the wake up time # minutes before to allow enough warm up time
+const int SECONDS_IN_MINUTE = 60;
 const int TOTAL_MINUTES_IN_DAY = 1440;
 
 const int DISK_STATS_LINE_INDEX = 0;
 const int DISK_LINE_NUM_OF_STATS = 11;
 const int NUM_OF_CPU_WORK_JIFFIES = 3;
-const string PING_IDENTIFIER = "from";    //string to look for in ping output if client is connected
-const string CONFIG_DELIMITER = ",";      //delimiter used in the config file
+const std::string PING_IDENTIFIER =
+    "from"; // string to look for in ping output if client is connected
+const std::string CONFIG_DELIMITER = ","; // delimiter used in the config file
 
-//default settings
-const int SUSPEND_AFTER       = 15;         //suspend system if idle for more than (x minute)
-const int CHECK_IF_IDLE_EVERY = 1;          //check if system is idle every (x minute)
-const int STOP_MONITORING_FOR = 5;          //stop monitoring system for (x minute)
-const int IDLE_LOAD_THRESHOLD = 5;          //Idle load threshold
-const int IDLE_TIME_THRESHOLD = 1;          //Idle time threshold
-const int RESET_MONITORING_IF_BUSY_FOR = 3; //reset monitoring counter if found busy (x minute)
-const bool NO_SUSPEND_IF_NOT_IDLE  = true;  //server cannot be suspended if this drive is busy
-const bool SPIN_DOWN_DISK_IF_IDLE  = false; //spin down the disks when idle
-const string  DEFAULT_SLEEP_MODE   = "disk"; //Default sleep mode
+// default settings
+const int SUSPEND_AFTER = 15;                  // suspend system if idle for more than (x minute)
+const int CHECK_IF_IDLE_EVERY = 1;             // check if system is idle every (x minute)
+const int STOP_MONITORING_FOR = 5;             // stop monitoring system for (x minute)
+const int IDLE_LOAD_THRESHOLD = 5;             // Idle load threshold
+const int IDLE_TIME_THRESHOLD = 1;             // Idle time threshold
+const int RESET_MONITORING_IF_BUSY_FOR = 3;    // reset monitoring counter if found busy (x minute)
+const bool NO_SUSPEND_IF_NOT_IDLE = true;      // server cannot be suspended if this drive is busy
+const bool SPIN_DOWN_DISK_IF_IDLE = false;     // spin down the disks when idle
+const std::string DEFAULT_SLEEP_MODE = "disk"; // Default sleep mode
 
 #endif

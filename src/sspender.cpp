@@ -16,113 +16,79 @@
  * along with sspender.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ConfigParser.h"
 #include "Manager.h"
 #include "PartitionTable.h"
-#include "ConfigParser.h"
 
 using namespace std;
 
-int main(int argc, char *argv[])
-{
-	string filePath;
+int main(int argc, char *argv[]) {
+  string filePath;
 
-	if (argc > 1)
-	{
-		filePath = argv[1];
-	}
+  if (argc > 1) {
+    filePath = argv[1];
+  }
 
-	vector<string> ipToWatch, wakeAt;
-	vector<DiskCfg> disksToMonitor;
-	CpuCfg cpuConfig;
-	SLEEP_MODE sleepMode;
-	int check_if_idle_every;
-    int stop_monitoring_for;
-    int reset_monitoring_after;
-    int suspend_after;
+  vector<string> ipToWatch;
+  vector<DiskCfg> disksToMonitor;
+  CpuCfg cpuConfig;
+  int check_if_idle_every;
+  int stop_monitoring_for;
+  int reset_monitoring_after;
+  int suspend_after;
 
-	PartitionTable partitionTable;
+  PartitionTable partitionTable;
 
-	partitionTable.loadPartitionTable();
+  partitionTable.loadPartitionTable();
 
-	cout << "PartitionTable loaded:\n" << partitionTable << endl;
+  cout << "PartitionTable loaded:\n" << partitionTable << endl;
 
-	ConfigParser configParser(partitionTable);
-	Manager manager;
+  ConfigParser configParser(partitionTable);
+  Manager manager;
 
-	bool configParsed = configParser.loadConfigs(filePath,
-												 partitionTable,
-			                                     &ipToWatch,
-			                                     &cpuConfig,
-			                                     &disksToMonitor,
-			                                     &wakeAt,
-			                                     &sleepMode,
-			                                     &check_if_idle_every,
-												 &stop_monitoring_for,
-												 &reset_monitoring_after,
-												 &suspend_after);
+  bool configParsed = configParser.loadConfigs(
+      filePath, partitionTable, &ipToWatch, &cpuConfig, &disksToMonitor, &check_if_idle_every,
+      &stop_monitoring_for, &reset_monitoring_after, &suspend_after);
 
-	if(configParsed)
-	{
-		cout << std::fixed << std::setprecision(2);
-		printHeaderMessage("Using the following validated configuration:", false);
+  if (configParsed) {
+    cout << std::fixed << std::setprecision(2);
+    printHeaderMessage("Using the following validated configuration:", false);
 
-		cout << "\nDon't suspend the machine if any of these IPs is online: ";
-		for(size_t i = 0, size = ipToWatch.size(); i < size; ++i)
-		{
-			cout << ipToWatch[i] << ",";
-		}
+    cout << "\nDon't suspend the machine if any of these IPs is online: ";
+    for (size_t i = 0, size = ipToWatch.size(); i < size; ++i) {
+      cout << ipToWatch[i] << ",";
+    }
 
-		cout << "\nSuspend the machine if all these devices are idle: ";
-		if(cpuConfig.suspendIfIdle)
-		{
-			cout << cpuConfig.cpuName << ",";
-		}
-			
-		for(size_t i = 0, size = disksToMonitor.size(); i < size; ++i)
-		{
-			if(disksToMonitor[i].suspendIfIdle)
-			{
-				cout << disksToMonitor[i].diskName << ",";
-			}
-		}
+    cout << "\nSuspend the machine if all these devices are idle: ";
+    if (cpuConfig.suspendIfIdle) {
+      cout << cpuConfig.cpuName << ",";
+    }
 
-		cout << "\nSpin down these drives if they are idle: ";
-		for(size_t i = 0, size = disksToMonitor.size(); i < size; ++i)
-		{
-			if(disksToMonitor[i].spinDown)
-			{
-				cout << disksToMonitor[i].diskName << ",";
-			}
-		}
+    for (size_t i = 0, size = disksToMonitor.size(); i < size; ++i) {
+      if (disksToMonitor[i].suspendIfIdle) {
+        cout << disksToMonitor[i].diskName << ",";
+      }
+    }
 
-		cout << "\nWake up the machine at the following times: ";
-		for(size_t i = 0, size = wakeAt.size(); i < size; ++i)
-		{
-			cout << wakeAt[i] << ",";
-		}
+    cout << "\nSpin down these drives if they are idle: ";
+    for (size_t i = 0, size = disksToMonitor.size(); i < size; ++i) {
+      if (disksToMonitor[i].spinDown) {
+        cout << disksToMonitor[i].diskName << ",";
+      }
+    }
 
-		cout << "\nSleep mode is: "
-		     << (sleepMode == MEM ? "Suspend to RAM - ACPI S3" : (sleepMode == DISK ? "Suspend to disk - ACPI S4" : "Stand by - ACPI S1"))
-		     << endl;
+    manager.setIpsToWatch(ipToWatch);
+    manager.setDisksToMonitor(disksToMonitor);
+    manager.setCpusToMonitor(cpuConfig);
+    manager.setTimers(check_if_idle_every, stop_monitoring_for, reset_monitoring_after,
+                      suspend_after);
 
-		manager.setIpsToWatch(ipToWatch);
-		manager.setDisksToMonitor(disksToMonitor);
-		manager.setCpusToMonitor(cpuConfig);
-		manager.setTimesToWakeAt(wakeAt);
-		manager.setSleepMode(sleepMode);
-		manager.setTimers(check_if_idle_every,
-		   	    		  stop_monitoring_for,
-		   	    		  reset_monitoring_after,
-		   	    		  suspend_after);
+    printHeaderMessage("Monitoring the machine", false);
 
-		printHeaderMessage("Monitoring the machine", false);
+    manager.monitorSystemUsage();
+  } else {
+    cout << "Failed to parse the cfg file, quitting." << endl;
+  }
 
-		manager.monitorSystemUsage();
-	}
-	else
-	{
-		cout << "Failed to parse the cfg file, quitting." << endl;
-	}
-
-	return(EXIT_SUCCESS);
+  return (EXIT_SUCCESS);
 }
